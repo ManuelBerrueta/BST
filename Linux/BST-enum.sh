@@ -84,6 +84,23 @@ printf '        ==[ User Groups ]==\n%s\n
         "$SU_PRIVS" \
         >> /tmp/.bst_enum.out
 
+echo "=]☼[ Collecting Machine Comms ]☼[="
+COMMS=$(netstat -ano)
+printf '%s\n\n' "$COMMS"
+echo
+
+echo "=]☼[ Collecting Routes ]☼[="
+LROUTES=$(route)
+printf '%s\n\n' "$LROUTES"
+echo
+
+
+printf '        ==[ Open Comms ]==\n%s\n \
+        ==[ Routes ]==\n%s\n\n' \
+        "$COMMS" \
+        "$LROUTES" \
+        >> /tmp/.bst_enum.out
+
 echo "=]☼[ Collecting History ]☼[="
 SOCIALSTUDIES=$(cat ~/.bash_history)
 echo
