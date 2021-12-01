@@ -1,0 +1,1 @@
+#https://azsec.azurewebsites.net/2019/12/20/a-few-ways-to-acquire-azure-access-token-with-scripting-languages/
