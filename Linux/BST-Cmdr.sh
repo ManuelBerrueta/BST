@@ -1,14 +1,15 @@
 #!/bin/bash -e
 
-script_name=$1
-vm_list=$2
+SCRIPT_NAME=$1
+VM_LIST=$2
 
-for vm in $(cat $vm_list)
+for vm in $(cat $VM_LIST)
 do
     # Run a command:
     #ssh -t ${USER}@${vm} sudo -- "sh -c 'uname -a'"
-    # Run a script:
     
-    script=$(cat $script_name)
-    ssh -t ${USER}@${vm} sudo -- $script
+    SCRIPT=$(cat $SCRIPT_NAME)
+    #TODO: Check distro
+    #!Works on Red Hat:
+    ssh -t ${USER}@${vm} $SCRIPT
 done
