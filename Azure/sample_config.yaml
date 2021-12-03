@@ -1,0 +1,7 @@
+azure:
+   subscription: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+   resource_group : my-RgName
+   token: ey.......
+   vms:
+   - myUbuntu-1-VM
+   - myRedHat7-1-VM
