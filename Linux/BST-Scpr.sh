@@ -5,5 +5,5 @@ VM_LIST=$2
 
 for vm in $(cat $VM_LIST)
 do
-    scp $FILE_TO_TRANSFER ${USER}@${vm}:/home/${USER}/
+    scp -r $FILE_TO_TRANSFER ${USER}@${vm}:/home/${USER}/
 done
