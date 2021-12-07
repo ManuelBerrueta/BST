@@ -1,5 +1,22 @@
 #!/usr/bin/env python3
-import az_cli
+import argparse
+
+#! WIP - CLI Shell of program
+
+parser = argparse.ArgumentParser(prog='BST Azure Python',
+                                 usage='%(prog)s [options to be]',
+                                 description='Interact with Azure')
+parser.add_argument('Command1', metavar='command1',
+                    type=str, help='Provide first command')
+parser.add_argument('Command2', metavar='command2',
+                    type=str, help='Provide second command')
+
+args = parser.parse_args()
+
+comm1 = args.Command1
+comm2 = args.Command2
+
+print('comm1=%s comm2=%s' % (comm1, comm2))
 
 
 # Packages required
