@@ -5,7 +5,7 @@ import json
 import os
 import subprocess
 
-from jwt.utils import base64url_decode
+from jwt.utils import base64url_decode, base64url_encode
 
 user = subprocess.check_output("whoami")
 token_path = "/home/" + user.decode().strip('\n') + "/.azure/accessTokens.json"
@@ -48,7 +48,7 @@ def decode_jwt():
                     partOfJWT)), indent=3) + bcolors.ENDC)
 
             # Decode Header and Claims together
-            #print(jwt.decode(token['accessToken'], verify=False))
+            # print(jwt.decode(token['accessToken'], verify=False))
 
             # jwt.decode(token['accessToken'], algorithms=['RS256'])
             print("\n")
@@ -56,9 +56,27 @@ def decode_jwt():
             # https://stackoverflow.com/questions/59425161/getting-only-decoded-payload-from-jwt-in-python
 
 
-def encode_jwt():
+def encode_clean_jwt():
     # Ref: https://auth0.com/blog/how-to-handle-jwt-in-python/
+    # encoded_JWT = jwt.encode({"some": "payload"}, private_key, algorithm="RS256")
+    # jwt.encode(
+    #    {"some": "payload"},
+    #    "secret",
+    #    algorithm="HS256",
+    #    headers={"kid": "230498151c214b788dd97f22b85410a5"},
+    # )
     print("WIP")
+
+
+def tamper_jwt_payload(in_jwt: str, tampered_payload: str):
+    split_JWT = in_jwt.split(".")
+
+    split_JWT[1] = base64url_encode(tampered_payload.encode()).decode()
+    #split_JWT[1] = 'test'
+
+    tampered_jwt = '.'.join(split_JWT)
+
+    print(tampered_jwt)
 
 
 decode_jwt()
