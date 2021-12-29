@@ -15,6 +15,9 @@ parser.add_argument('--grabAzTokdefault', required=False, default=False,
                     action='store_true', help='--grabAzTokdefault')
 parser.add_argument('--decode', type=str, required=False,
                     default='', help='--decode <eyJ0...tokenString>')
+parser.add_argument('--tamper', nargs=2, metavar=('in_jwt', 'new_payload'), type=str, required=False, default='',
+                    help='--tamper <eyJ0...tokenString> \'{"aud": "https://some.domain.net/","iat": 16408037602,"nbf": 1648976610,"exp": 1648986610,"name": "Not Me","sub": "1A2b3C4d5E6f7G8h9I0j"}\'')
+
 args = parser.parse_args()
 
 
@@ -81,7 +84,7 @@ def tamper_jwt_payload(in_jwt: str, tampered_payload: str):
     #split_JWT[1] = 'test'
 
     tampered_jwt = '.'.join(split_JWT)
-
+    print("\n===[New Tampered JWT]===\n")
     print(tampered_jwt)
 
 
@@ -115,11 +118,15 @@ def main():
         print("DECODING JWT")
         decode_jwt(args.decode)
         print("DONE!")
+    elif args.tamper:
+        in_jwt, new_payload = args.tamper
+        tamper_jwt_payload(in_jwt, new_payload)
+        print("Finished Tampered JWT")
     elif args.grabAzTokdefault:
         user = subprocess.check_output("whoami")
         token_path = "/home/" + user.decode().strip('\n') + "/.azure/accessTokens.json"
         decode_az_accesstokens(token_path)
-        print("Running DEfault")
+        print("Running Default")
     elif args.grabAzTokens:
         decode_az_accesstokens(args.grabAzTokens)
         print("Running passed in")
