@@ -1,14 +1,21 @@
 #!/usr/bin/env python3
 import jwt
+from jwt.utils import base64url_decode, base64url_encode
 import base64
 import json
 import os
 import subprocess
+import argparse
 
-from jwt.utils import base64url_decode, base64url_encode
+parser = argparse.ArgumentParser()
 
-user = subprocess.check_output("whoami")
-token_path = "/home/" + user.decode().strip('\n') + "/.azure/accessTokens.json"
+parser.add_argument('--grabAzTokens', type=str, required=False,
+                    default='.azure/accessTokens.json', help='--grabAzTokens /path/to/.azure/accessTokens.json')
+parser.add_argument('--grabAzTokdefault', required=False, default=False,
+                    action='store_true', help='--grabAzTokdefault')
+parser.add_argument('--decode', type=str, required=False,
+                    default='', help='--decode <eyJ0...tokenString>')
+args = parser.parse_args()
 
 
 class bcolors:
@@ -23,11 +30,10 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-def decode_jwt():
+def decode_az_accesstokens(token_path):
     with open(token_path, "r") as data_file:
         tokens = json.load(data_file)
         for i, token in enumerate(tokens):
-            # TODO: FORMAT STRING#print("][Token #][",token)
             print(bcolors.WARNING + "][Token #" + i.__str__() + "][")
             print(token['accessToken'] + bcolors.ENDC)
 
@@ -79,4 +85,46 @@ def tamper_jwt_payload(in_jwt: str, tampered_payload: str):
     print(tampered_jwt)
 
 
-decode_jwt()
+def decode_jwt(in_jwt: str):
+    # Split decode each piece:
+    split_JWT = in_jwt.split(".")
+    for j, partOfJWT in enumerate(split_JWT):
+        if j == 0:
+            print(bcolors.HEADER + "Header:")
+        elif j == 1:
+            print(bcolors.OKBLUE + "Claims:")
+        else:
+            print(bcolors.OKGREEN + "Signature:\n" +
+                  base64url_decode(partOfJWT).__str__() + bcolors.ENDC)
+            break
+
+        # print(base64url_decode(partOfJWT).__str__() + bcolors.ENDC)
+        print(json.dumps(json.loads(base64url_decode(
+            partOfJWT)), indent=3) + bcolors.ENDC)
+
+    # Decode Header and Claims together
+    # print(jwt.decode(token['accessToken'], verify=False))
+
+    # jwt.decode(token['accessToken'], algorithms=['RS256'])
+    print("\n")
+
+
+def main():
+    token_path = ''
+    if args.decode:
+        print("DECODING JWT")
+        decode_jwt(args.decode)
+        print("DONE!")
+    elif args.grabAzTokdefault:
+        user = subprocess.check_output("whoami")
+        token_path = "/home/" + user.decode().strip('\n') + "/.azure/accessTokens.json"
+        decode_az_accesstokens(token_path)
+        print("Running DEfault")
+    elif args.grabAzTokens:
+        decode_az_accesstokens(args.grabAzTokens)
+        print("Running passed in")
+        print(args.grabAzTokens)
+
+
+if __name__ == "__main__":
+    main()
