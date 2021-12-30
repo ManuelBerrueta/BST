@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import jwt
+from jwt.utils import base64url_decode, base64url_encode
 import base64
 import json
 import os
@@ -48,11 +49,12 @@ def decode_az_accesstokens(token_path):
                     print(bcolors.OKBLUE + "Claims:")
                 else:
                     print(bcolors.OKGREEN + "Signature:\n" +
-                          base64.urlsafe_b64decode(partOfJWT).__str__() + bcolors.ENDC)
-                          #base64url_decode(partOfJWT).__str__() + bcolors.ENDC)
+                          base64url_decode(partOfJWT).__str__() + bcolors.ENDC)
+                          #base64.urlsafe_b64decode(partOfJWT).__str__() + bcolors.ENDC)
                     break
                 #print(base64.urlsafe_b64decode(partOfJWT).__str__() + bcolors.ENDC)
-                print(json.dumps(json.loads(base64.urlsafe_b64decode(
+                #print(json.dumps(json.loads(base64.urlsafe_b64decode(
+                print(json.dumps(json.loads(base64url_decode(
                     partOfJWT)), indent=3) + bcolors.ENDC)
 
             # Decode Header and Claims together
@@ -78,7 +80,7 @@ def encode_clean_jwt():
 def tamper_jwt_payload(in_jwt: str, tampered_payload: str):
     split_JWT = in_jwt.split(".")
 
-    split_JWT[1] = base64.urlsafe_b64encode(tampered_payload.encode()).decode()
+    split_JWT[1] = base64url_decode(tampered_payload.encode()).decode()
 
     tampered_jwt = '.'.join(split_JWT)
     print("\n===[New Tampered JWT]===\n")
@@ -95,11 +97,11 @@ def decode_jwt(in_jwt: str):
             print(bcolors.OKBLUE + "Claims:")
         else:
             print(bcolors.OKGREEN + "Signature:\n" +
-                  base64.urlsafe_b64decode(partOfJWT).__str__() + bcolors.ENDC)
+                  base64url_decode(partOfJWT).__str__() + bcolors.ENDC)
             break
 
-        # print(base64.urlsafe_b64decode(partOfJWT).__str__() + bcolors.ENDC)
-        print(json.dumps(json.loads(base64.urlsafe_b64decode(
+        # print(base64url_decode(partOfJWT).__str__() + bcolors.ENDC)
+        print(json.dumps(json.loads(base64url_decode(
             partOfJWT)), indent=3) + bcolors.ENDC)
 
     # Decode Header and Claims together
