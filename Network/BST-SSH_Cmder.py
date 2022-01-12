@@ -2,6 +2,7 @@ from sys import stderr, stdout
 import paramiko
 import argparse
 import getpass
+import csv
 
 from paramiko import client
 
@@ -50,7 +51,7 @@ def ssh_cmder(
         if password != "" and key == "":
             ssh_client.connect(ip, port, user, password)
         elif key != "" and password == "":
-            ssh_client.connect(ip, port, user, key_filename=key)
+            ssh_client.connect(ip, port, user, key_filename=key, look_for_keys=False)
 
         for cmd in cmd_list:
             _, stdout, stderr = ssh_client.exec_command(cmd)
@@ -59,7 +60,8 @@ def ssh_cmder(
             if cmd_output:
                 print("\n===[ CMD Output for IP:" + ip + "]===")
                 for each_line in cmd_output:
-                    print(each_line.strip())
+                    # print(each_line.strip())
+                    print(each_line)
 
             print("\n")
 
@@ -81,9 +83,15 @@ def main():
         print("You must provide either --ip or --ip_list as an argument but NOT both!")
         exit(1)
     elif args.ip_list:
-        with open(args.ip_list) as ip_file:
-            file_content = ip_file.read()
-            ip_list = file_content.split(",")
+        with open(args.ip_list, newline="") as ip_file:
+            # file_content = ip_file.read()
+            # ip_list = file_content.split(",")
+            file_content = csv.reader(ip_file)
+            ip_list = list(file_content)
+            ip_list = ip_list[0]
+
+            print(ip_list)
+            print(type(ip_list))
             ip_file.close()
     elif args.ip:
         ip_list.append(args.ip)
