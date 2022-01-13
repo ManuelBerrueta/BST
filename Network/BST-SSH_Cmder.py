@@ -21,12 +21,15 @@ parser.add_argument(
 parser.add_argument(
     "--key", type=str, required=False, default="", help="--key id_rsa.txt"
 )
-parser.add_argument("--ip", type=str, required=False, default="", help="--ip 127.0.0.1")
-parser.add_argument("--port", type=int, required=False, default=22, help="--port 22")
+parser.add_argument("--ip", type=str, required=False,
+                    default="", help="--ip 127.0.0.1")
+parser.add_argument("--port", type=int, required=False,
+                    default=22, help="--port 22")
 parser.add_argument(
     "--ip_list", type=str, required=False, default="", help="--ip_list my_ip_list.txt"
 )
-parser.add_argument("--cmd", type=str, required=False, default="", help="--cmd ls")
+parser.add_argument("--cmd", type=str, required=False,
+                    default="", help="--cmd ls")
 parser.add_argument(
     "--cmd_script",
     type=str,
@@ -51,14 +54,15 @@ def ssh_cmder(
         if password != "" and key == "":
             ssh_client.connect(ip, port, user, password)
         elif key != "" and password == "":
-            ssh_client.connect(ip, port, user, key_filename=key, look_for_keys=False)
+            ssh_client.connect(
+                ip, port, user, key_filename=key, look_for_keys=False)
 
         for cmd in cmd_list:
             _, stdout, stderr = ssh_client.exec_command(cmd)
             cmd_output = stdout.readlines() + stderr.readlines()
 
+            print("\n===[ CMD Output for IP:" + ip + "]===")
             if cmd_output:
-                print("\n===[ CMD Output for IP:" + ip + "]===")
                 for each_line in cmd_output:
                     # print(each_line.strip())
                     print(each_line)
