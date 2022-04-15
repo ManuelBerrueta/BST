@@ -1,3 +1,4 @@
+from ast import Try
 from sys import stderr, stdout
 import os.path
 import asyncio
@@ -32,7 +33,7 @@ parser.add_argument(
     "--scp", type=str, required=False, default="", help="--scp put or --scp get"
 )
 parser.add_argument(
-    "--scp_path", type=list, required=False, default=[], help="--scp_path target/File/Path1 target/File/Path2"
+    "--scp_path", required=False, nargs='+', default="", help="--scp_path target/File/Path1 target/File/Path2"
 )
 parser.add_argument(
     "--ip_list", type=str, required=False, default="", help="--ip_list my_ip_list.txt"
@@ -68,7 +69,16 @@ def scp_transfer(user: str, password: str, key: str, ip_list: str, port: str, sc
             if not os.path.isfile(file):
                 paths.remove(file)
 
-        scp.put(paths)
+        print("===[ Target IP: " + ip + " ]===")
+
+        try:
+            scp.put(paths)
+        except:
+            print("====( Error while transfering to IP: " + ip)
+
+        print("====( Transfer of " + str(paths) + " success to IP: " + ip)
+        ssh_client.close()
+        print("\n")
 
 
 def ssh_cmder(
@@ -153,8 +163,16 @@ def main():
             print("=== Error: No paths passed for scp file transfer ===")
             exit(1)
 
-        if scp_action != "put" or scp_action != "get":
-            print("=== Error: --scp-action must be either 'put' or 'get'  ===")
+        print("scp_action: " + scp_action)
+
+        if scp_action == "put":
+            print("scp_action is put: " + scp_action)
+
+        if scp_action == "get":
+            print("scp_action is get: " + scp_action)
+
+        if scp_action != "put" and scp_action != "get":
+            print("=== Error: --scp must be either 'put' or 'get'  ===")
             exit(1)
 
         scp_transfer(user, pwd, key_path, ip_list, port, scp_action, scp_paths)
