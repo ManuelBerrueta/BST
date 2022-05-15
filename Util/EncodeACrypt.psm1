@@ -88,16 +88,15 @@ function Use-Base64EncodedCmd {
         [String[]]$InputCmd
     )
     try {
-        
+        powershell -EncodedCommand $InputCmd
     }
     catch {
-        <#Do this if a terminating exception happens#>
+        { 1:Write-Warning -Message "Error Running Base64 String as Command" }
     }
     finally {
         Write-Host "Encoded command run attempt finished" -ForegroundColor Green
     }
-    #$DecodedBase64String = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($EncodedString))
-    powershell -EncodedCommand $InputCmd
+    
 }
 
 Function Encrypt-Asymmetric {
@@ -109,7 +108,7 @@ Function Encrypt-Asymmetric {
         [Parameter(Position = 1, Mandatory = $true)][ValidateNotNullOrEmpty()][ValidateScript({ Test-Path $_ -PathType Leaf })][System.String]
         $PublicCertFilePath
     )
-    # Encrypts a string with a public key
+    # Encrypts a string with a public key extracted from local Cert
     $PublicCert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($PublicCertFilePath)
     #$PublicCert = Get-ChildItem Pu
     $ByteArray = [System.Text.Encoding]::UTF8.GetBytes($ClearText)
@@ -125,18 +124,17 @@ Function Decrypt-Asymmetric {
     [OutputType([System.String])]
     param(
         [Parameter(Position = 0, Mandatory = $true)][ValidateNotNullOrEmpty()][System.String]
-        $EncryptedBase64String,
+        $CertPath,        
         [Parameter(Position = 1, Mandatory = $true)][ValidateNotNullOrEmpty()][System.String]
+        $EncryptedBase64String,
+        [Parameter(Position = 2, Mandatory = $true)][ValidateNotNullOrEmpty()][System.String]
         $CertThumbprint
     )
-    # Decrypts text using the private key
-    # Assumes the certificate is in the LocalMachine\My (Personal) Store
-    #$Cert = Get-ChildItem cert:\LocalMachine\My | Where-Object { $_.Thumbprint -eq $CertThumbprint }
-    #TODO:
-    $Cert = Get-ChildItem $CertThumbprint
+    # Decrypts text using the private key from local system cert store
+    $Cert = Get-ChildItem $CertPath | Where-Object { $_.Thumbprint -eq $CertThumbprint } #* This returns the X509Certificate2 object
     if ($Cert) {
         $EncryptedByteArray = [Convert]::FromBase64String($EncryptedBase64String)
-        #$ClearText = [System.Text.Encoding]::UTF8.GetString($Cert.PrivateKey.Decrypt($EncryptedByteArray, $true))
+        #$ClearText = [System.Text.Encoding]::UTF8.GetString($Cert.PrivateKey.Decrypt($EncryptedByteArray, $true)) #* Older PWSH versions use this
         $ClearText = [System.Text.Encoding]::UTF8.GetString($Cert.PrivateKey.Decrypt($EncryptedByteArray, [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA256))
     }
     Else { Write-Error "Certificate with thumbprint: $CertThumbprint not found!" }
@@ -147,13 +145,11 @@ Function Decrypt-Asymmetric {
 #! For this encrypt and decrypt functions I found them @ https://stackoverflow.com/questions/16994452/powershell-asymmetric-encrypt-decrypt-functions
 #* No need to reinvent the wheel!
 #* Some fixes: https://github.com/PowerShell/PowerShell/issues/12572
-#$my_ls = "ls"
-#$Base64EncodedStr = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($my_ls))
-#pwsh -e $Base64EncodedStr
 
-#Encryption
-
-# Note: to execute a base64 encoded command pwsh -e 
+# To execute a Base64 encoded command pwsh -e
+#   $my_ls = "ls"
+#   $Base64EncodedStr = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($my_ls))
+#   pwsh -e $Base64EncodedStr 
 
 # To create a new cert to Encrypt/Decrypt:
 #  New-SelfSignedCertificate -DnsName MyCertToEncryptDecrypt -CertStoreLocation "Cert:\CurrentUser\My" -KeyUsage KeyEncipherment,DataEncipherment, KeyAgreement -Type DocumentEncryptionCert
@@ -164,5 +160,9 @@ Function Decrypt-Asymmetric {
 #  Export-PfxCertificate -FilePath myPrivateKey -Cert Cert:\LocalMachine\My\13x..34 -Password $("password" | ConvertTo-SecureString -AsPlainText -Force)
 #  Export-Certificate -FilePath myPublicKey -Cert Cert:\LocalMachine\My\13x..34
 
-#* Useful reference: https://docs.microsoft.com/en-us/powershell/scripting/learn/ps101/10-script-modules?view=powershell-7.2
-#* https://docs.microsoft.com/en-us/powershell/scripting/learn/ps101/09-functions?view=powershell-7.2
+#* Useful reference(s): 
+#*  https://docs.microsoft.com/en-us/powershell/scripting/learn/ps101/10-script-modules?view=powershell-7.2
+#*  https://docs.microsoft.com/en-us/powershell/scripting/learn/ps101/09-functions?view=powershell-7.2
+
+# Future Explorations 
+#  https://stackoverflow.com/questions/40016624/powershell-asymmetric-encryption
