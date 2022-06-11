@@ -166,3 +166,5 @@ Function Decrypt-Asymmetric {
 
 # Future Explorations 
 #  https://stackoverflow.com/questions/40016624/powershell-asymmetric-encryption
+#  https://stackoverflow.com/questions/63523447/decrypt-file-using-rsacryptoserviceprovider-in-powershell
+#  https://stackoverflow.com/questions/34613479/rsacryptoserviceprovider-encrypt-and-decrypt-using-own-public-and-private-key
