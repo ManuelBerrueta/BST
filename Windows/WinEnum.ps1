@@ -69,4 +69,8 @@ Write-Host "`n$Separator[ List All Services ]$Separator" -ForegroundColor DarkGr
 $ServicesList = sc queryex type=service
 $ServicesList
 
+Write-Host "`n$Separator[ AAD Info ]$Separator" -ForegroundColor DarkBlue
+$global:AADInfo =  dsregcmd /status
+$AADInfo
+
 Write-Host
