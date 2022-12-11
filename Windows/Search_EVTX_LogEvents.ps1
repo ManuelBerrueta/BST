@@ -18,8 +18,13 @@ $powershell_events = @("4103", "4104")
 $sysmon_events = @("1", "7")
 $testEventNum = @("1033", "1107")
 
-$TargetEvtxFile = "C:\Users\0siris\Downloads\2022_KringleCon\powershell.evtx"
+#* You can plug in the target log file here and run the script without passing it in
+#$TargetEvtxFile = "C:\Users\<userName>\Downloads\powershell.evtx"
 $Events = Get-WinEvent -Path $TargetEvtxFile
+
+#* You can also analyze local machine logs
+#$targetLog = "Security"
+#$Events = Get-WinEvent -LogName $targetLog
 
 #!This is the string that will be matched in message
 $interestedStr = "client"
@@ -44,9 +49,12 @@ ForEach ($Event in $Events) {
         #$Event.UserId
         #$Event.ProcessId
         #$Event.ThreadId
+        #$Event.ProcessId
+        #$Event.TaskDisplayName
+        #$Event.Properties[0].Value 
     }
 
-    #* Match 1 string of interests in the message
+    #* Match 1 string of interest in the message
     #if ( $Event.Message -like "*$interestedStr*") {
     #    Write-Host $Event.Message -ForegroundColor Green -BackgroundColor Black
     #}
