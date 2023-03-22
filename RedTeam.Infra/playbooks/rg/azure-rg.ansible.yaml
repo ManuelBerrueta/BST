@@ -1,0 +1,14 @@
+---
+- name: Create Resource Group
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Creating Resource Group - "{{ name }}"
+    azure_rm_resourcegroup:
+      name: "{{ name }}"
+      location: "{{ location }}"
+    register: rg_result
+
+  - name: Print Resource Group Id
+    debug:
+      var: rg_result.state.id

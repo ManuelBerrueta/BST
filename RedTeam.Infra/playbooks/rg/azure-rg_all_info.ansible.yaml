@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Get all resource group in subscription
+      azure_rm_resourcegroup_facts:
+      register: group_array
+    - debug:
+        var: group_array
