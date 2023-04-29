@@ -1,0 +1,1 @@
+Create an Azure Virtual Machine using `Windows Server 2022 Datacenter` OS.

@@ -1,0 +1,1 @@
+Create Azure Virtual Machine with `Ubuntu 18.04-LTS`
