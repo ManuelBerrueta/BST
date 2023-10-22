@@ -10,7 +10,10 @@ az aks get-credentials --admin -g <ResourceGroup> -n <ClusterName> --subscriptio
 ```Shell
 kubectl api-resources
 kubectl get -h #😉
+kubectl cluster-info
+# Ultimate dump of data on the cluster: kubectl cluster-info dump
 kubectl get nodes --all-namespaces -o wide
+kubectl get namespaces
 kubectl get deployments -A
 kubectl get pods --all-namespaces
 kubectl get services --all-namespaces
