@@ -1,12 +1,21 @@
 from cryptography.hazmat.primitives import serialization
 import jwt
 import datetime
+import argparse
 
-# Path where private key is located
-private_key_path = 'CertPrivateKey/priv_key.pem'
+# To run this script: python jwt_sign.py /path/to/private/key
+
+parser = argparse.ArgumentParser(description='CLI input')
+parser.add_argument('private_key_path', type=str, help='The path to the private key')
+args = parser.parse_args()
+
+# Now you can use args.private_key_path where you need the private key path
+print(f'Using Private key @ path: {args.private_key_path}')
+
+private_key_path = args.private_key_path
 
 # Open + read the private key
-private_key_str = open(private_key_path, 'r').read()
+private_key_str = open(args.private_key_path, 'r').read()
 
 # Load as PEM private key
 private_key = serialization.load_pem_private_key(
