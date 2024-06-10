@@ -24,15 +24,15 @@ private_key = serialization.load_pem_private_key(
 headers = {
     "alg": "RS256",
     "typ": "JWT",
-    "my_custom": "blah"
+    "x5t": input('Enter the x5t: ')
 }
 
 payload_data = {
-    "aud": "https://www.<>.com",
-    "iss": "00000000-0000-0000-0000-000000000000",
+    "aud": input('Enter the aud claim: '),
+    "iss": input('Enter the iss claim: '),
     "nbf": datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(seconds=30),
     "exp": datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(days=2),
-    "sub": "00000000-0000-0000-0000-000000000000"
+    "sub": input('Enter the sub claim: ')
 }
 
 new_token = jwt.encode(
