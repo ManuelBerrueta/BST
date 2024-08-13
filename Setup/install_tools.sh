@@ -49,3 +49,6 @@ done
 
 # Reload .bashrc to apply changes
 source ~/.bashrc
+
+# Install Semgrep
+python3 -m pip install semgrep
