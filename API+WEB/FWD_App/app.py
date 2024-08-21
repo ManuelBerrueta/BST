@@ -40,5 +40,12 @@ def proxy(path):
     # Return the response from the forwarded request
     return response.content, response.status_code, response.headers.items()
 
+# This function would redirect all request to the new URL instead
+#    You would use this instead of the proxy function above
+#def before_request():
+#    # Construct the new URL with the query string
+#    new_url = TARGET_URL + request.full_path
+#    return redirect(new_url, code=302)
+
 if __name__ == "__main__":
     app.run(debug=True)
