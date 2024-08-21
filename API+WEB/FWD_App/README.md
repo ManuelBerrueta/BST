@@ -1,5 +1,6 @@
 ### What is FWD_App?
 FWD_App is a simple application using Flask that when deployed will forward all the requests to a target URL using the same method, path, query string, headers (except for the Host header of course), cookies and data(body).
+- Tested using Python 3.9
 
 This can be useful in so many ways, including in dangling domains and subdomains 😉
 

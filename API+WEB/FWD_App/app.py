@@ -19,6 +19,9 @@ def proxy(path):
     # Forward headers
     headers = {key: value for key, value in request.headers if key != 'Host'}
     
+    # Include the source IP in the headers
+    headers['X-Forwarded-For'] = request.remote_addr
+
     # Forward the request with the same method and data
     response = requests.request(
         method=request.method,
@@ -29,7 +32,6 @@ def proxy(path):
         allow_redirects=False,
         params=request.args
     )
-
 
     # Construct the response
     excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
