@@ -1,0 +1,16 @@
+# DRAFT
+
+rules:
+  - id: find-urls-anywhere
+    patterns:
+      - pattern-regex: |
+          \b((http|https):\/\/|www\.)[a-zA-Z0-9\-]+(\.[a-zA-Z]{2,})+(\/[^\s]*)?\b
+    severity: INFO
+    message: "Possible URL found: $URL"
+    languages:
+      - generic
+    metadata:
+      category: security
+      confidence: high
+    #pattern_regex: |
+    #  (https?:\/\/[^\s\"\'<>]+)
