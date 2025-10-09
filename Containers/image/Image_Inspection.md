@@ -23,3 +23,8 @@ docker inspect <imagename:tag>
 ```sh
 docker inspect <imagename:tag> | jq '.[0].Config.Env'
 ```
+
+## Trivy Image Scan
+```sh
+ docker run  -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image <local-image_Name>:<Tag>
+```
